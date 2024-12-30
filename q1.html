@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(154, 152, 33);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .kanban-board {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+        }
+
+        .column {
+            background-color: transparent;
+            width: 30%;
+            min-height: 400px;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .column h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #ececec;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card:active {
+            background-color: #dcdcdc;
+        }
+
+        button.add-card {
+            display: block;
+            margin: 10px auto;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.add-card:hover {
+            background-color: #0056b3;
+        }
+
+        .column {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            min-width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="kanban-board">
+        <div class="column" id="to-do">
+            <h2>To Do</h2>
+            <div class="card" draggable="true" contenteditable="true">Task 1</div>
+            <div class="card" draggable="true" contenteditable="true">Task 2</div>
+            <button class="add-card">Add Card</button>
+        </div>
+        <div class="column" id="in-progress">
+            <h2>In Progress</h2>
+        </div>
+        <div class="column" id="done">
+            <h2>Done</h2>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+
+            column.addEventListener('drop', (event) => {
+                event.preventDefault();
+                const draggedCard = document.querySelector('.dragging');
+                if (draggedCard) {
+                    column.appendChild(draggedCard);
+                }
+            });
+        });
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('dragstart', () => {
+                card.classList.add('dragging');
+            });
+
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+            });
+        });
+
+        document.querySelectorAll('.add-card').forEach(button => {
+            button.addEventListener('click', () => {
+                const column = button.closest('.column');
+                const newCard = document.createElement('div');
+                newCard.classList.add('card');
+                newCard.setAttribute('draggable', 'true');
+                newCard.setAttribute('contenteditable', 'true');
+                newCard.textContent = 'New Task';
+                column.insertBefore(newCard, button);
+
+                newCard.addEventListener('dragstart', () => {
+                    newCard.classList.add('dragging');
+                });
+
+                newCard.addEventListener('dragend', () => {
+                    newCard.classList.remove('dragging');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
